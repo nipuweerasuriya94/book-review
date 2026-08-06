@@ -49,4 +49,26 @@ class Book extends Model
             //$query is an object. Objects are passed by reference not by copy. We are modifying an existing object. 
             //Therefore, we don't need to return anything.
     }
+    //Mixing some scopes to make things simpler
+    public function scopePopularLastMonth(Builder $query): Builder|QueryBuilder {
+        return $query->popular(now()->subMonth(), now())//Get all the books that are popular from last month till now.
+        ->highestRated(now()->subMonth(), now())
+        ->minReviews(2); 
+    }
+    public function scopePopularLast6Months(Builder $query): Builder|QueryBuilder {
+        return $query->popular(now()->subMonths(6), now())//Get all the books that are popular from last 6 months till now.
+        ->highestRated(now()->subMonths(6), now())
+        ->minReviews(5); 
+    }
+    public function scopeHighestRatedLastMonth(Builder $query): Builder|QueryBuilder {
+        return $query->highestRated(now()->subMonth(), now())//Get all the books that are highest rated from last month till now.
+        ->popular(now()->subMonth(), now())
+        ->minReviews(2); 
+    }
+    public function scopeHighestRatedLast6Month(Builder $query): Builder|QueryBuilder {
+        return $query->highestRated(now()->subMonths(6), now())//Get all the books that are highest rated from last 6 months till now.
+        ->popular(now()->subMonths(6), now())
+        ->minReviews(5); 
+    }
+   
 }
