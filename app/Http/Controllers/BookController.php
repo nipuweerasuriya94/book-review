@@ -28,12 +28,12 @@ class BookController extends Controller
         //$books = $books->get();
         $cacheKey = 'books:' . $filter . ':' . $title; //Need to have a cache key to make sure the filters are included in the result.
         $books = 
-            cache()->remember(
-            $cacheKey, 
-            3600, 
-            fn() => 
-            $books->get()
-        ); //This cache result replaces the regular get() function. This is used as a optimization technique.
+            // cache()->remember(
+            // $cacheKey, 
+            // 3600, 
+            // fn() => 
+            $books->paginate();
+        // ); //This cache result replaces the regular get() function. This is used as a optimization technique.
 
         // $books = cache()->remember($cacheKey, 3600, function() use($books){
         //     dd('Not from cache!');
