@@ -23,14 +23,27 @@ class Book extends Model
     public function scopeTitle(Builder $query, string $title): Builder | QueryBuilder{
         return $query->where('title', 'LIKE', '%'. $title . '%');
     }
+
+
+    //Retriving the reviews count and average rating and reusing these scopes in other scopes.
+    public function scopeWithReviewsCount(Builder $query, $from=null, $to=null): Builder | QueryBuilder{
+         return $query->withCount(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)]);
+    }
+    public function scopeWithAvgRating(Builder $query, $from=null, $to=null): Builder | QueryBuilder{
+         return $query->withAvg(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)], 'rating');
+    }
+
+
+
+
+
     //Get the most popular books by the number of reviews.
     public function scopePopular(Builder $query, $from = null, $to = null): Builder{
-        return $query->withCount(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)])->orderBy('reviews_count', 'desc');//Arrow function
+        return $query->withReviewsCount()->orderBy('reviews_count', 'desc');//Arrow function
     }
     //Get the highest rated books by sorting the books by using reviews average rating.
     public function scopeHighestRated(Builder $query, $from = null, $to = null): Builder | QueryBuilder{
-        return $query->withAvg(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)], 'rating')
-        ->orderBy('reviews_avg_rating', 'desc');
+        return $query->withAvgRating()->orderBy('reviews_avg_rating', 'desc');
     }
     //To implement a minimum number of reviews to be considered.
     public function scopeMinReviews(Builder $query, int $minReviews): Builder | QueryBuilder{
@@ -69,6 +82,11 @@ class Book extends Model
         return $query->highestRated(now()->subMonths(6), now())//Get all the books that are highest rated from last 6 months till now.
         ->popular(now()->subMonths(6), now())
         ->minReviews(5); 
+    }
+
+    protected static function booted(){
+        static::updated(fn(Book $book)=> cache()->forget('book:' . $book->id));//Whenever the book model is modified this will be triggered.
+        static::deleted(fn(Book $book)=> cache()->forget('book:' . $book->id));
     }
    
 }
