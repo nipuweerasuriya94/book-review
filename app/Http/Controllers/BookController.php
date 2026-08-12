@@ -57,12 +57,18 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        return view(
-            'books.show', 
-            ['book' => $book->load([
-                'reviews' => fn($query)=> $query->latest()
-            ])]  
-        );//Method is loading a book and the arrow function arrange the reviews in a certain order.
+        // return view(
+        //     'books.show', 
+        //     ['book' => $book->load([
+        //         'reviews' => fn($query)=> $query->latest()
+        //     ])]  
+        // );//Method is loading a book and the arrow function arrange the reviews in a certain order. This code can be used when cache optimization is not used.
+
+        $cacheKey = 'book:' . $book->id;
+        $book = cache()->remember($cacheKey, 3600, fn() => $book->load([
+                 'reviews' => fn($query)=> $query->latest()
+        ]));
+        return view('books.show',['book' => $book]);
     }
 
     /**
