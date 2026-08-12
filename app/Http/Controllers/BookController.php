@@ -25,7 +25,14 @@ class BookController extends Controller
             'highest_rated_last_6months' => $books->highestRatedLast6Month(),
             default => $books->latest()
         };
-        $books = $books->get();  
+        //$books = $books->get();
+        $cacheKey = 'books:' . $filter . ':' . $title; //Need to have a cache key to make sure the filters are included in the result.
+        $books = cache()->remember($cacheKey, 3600, fn() => $books->get()); //This cache result replaces the regular get() function. This is used as a optimization technique.
+
+        // $books = cache()->remember($cacheKey, 3600, function() use($books){
+        //     dd('Not from cache!');
+        //     return $books->get();
+        // }); //Use this dump and die function to make sure the caching is working.
         return view('books.index', ['books' => $books]);
     }
 
