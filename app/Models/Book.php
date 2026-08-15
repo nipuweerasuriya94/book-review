@@ -32,11 +32,6 @@ class Book extends Model
     public function scopeWithAvgRating(Builder $query, $from=null, $to=null): Builder | QueryBuilder{
          return $query->withAvg(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)], 'rating');
     }
-
-
-
-
-
     //Get the most popular books by the number of reviews.
     public function scopePopular(Builder $query, $from = null, $to = null): Builder{
         return $query->withReviewsCount()->orderBy('reviews_count', 'desc');//Arrow function
