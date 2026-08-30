@@ -18,21 +18,33 @@ This project was developed as a practical Laravel application to demonstrate my 
 ## Features
 
 -Book management (Create, Read, Update and Delete)
+
 -Search functionality
+
 -Book filtering
+
 -Pagination
+
 -Form validation
+
 -MySQL database integration
+
 -Laravel Eloquent ORM
+
 -Application caching
+
 -Responsive user interface
+
 -MVC architecture
 
 ### Technologies
 
 -Backend: PHP, Laravel
+
 -Database: MySQL
+
 -Frontend: Blade, HTML, Tailwind CSS, JavaScript
+
 -Version Control: Git / GitHub
 
 ## Installation
