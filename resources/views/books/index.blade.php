@@ -2,8 +2,11 @@
 
 @section('content')
 
-    <h1 class="mb-10 text-2x1"></h1>
-    
+<div class="ml-5 mr-5">
+    <h1 class="mb-10 text-3xl font-bold text-heading md:text-5xl lg:text-6xl text-center">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">LIBRIS</span> Book Review</h1>
+
+
     <form method="GET" action="{{ route('books.index') }}" class="mb-4 flex items-center space-x-2">
         <input type="text" name="title" placeholder="Search by title" value="{{ request('title') }}" class="input h-10"/>
         <input type="hidden" name="filter" value="{{ request('filter') }}"/>
@@ -67,5 +70,5 @@
             {{ $books->links() }}
         </nav>
     @endif
-
+</div>
 @endsection
